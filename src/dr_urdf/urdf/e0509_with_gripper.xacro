@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="e0509_with_gripper">
+
+
+  <!-- RH-P12-RN-A 그리퍼 매크로 가져오기 -->
+  <xacro:include filename="$(find rh_p12_rn_a_description)/urdf/rh_p12_rn_a.xacro"/>
+  <!-- Args -->
+  <xacro:arg name="color"        default="white"/>
+  <xacro:arg name="gripper"      default="none"/>
+  <xacro:arg name="namespace"    default=""/>
+  <xacro:arg name="use_gazebo"   default="false"/>
+  <xacro:arg name="use_mujoco"   default="false"/>
+  <xacro:arg name="host"         default=""/>
+  <xacro:arg name="port"         default=""/>
+  <xacro:arg name="rt_host"      default=""/>
+  <xacro:arg name="mode"         default=""/>
+  <xacro:arg name="model"        default=""/>
+  <xacro:arg name="update_rate"  default=""/>
+
+  <!-- Local properties -->
+  <xacro:property name="cr"          value="$(arg color)"/>
+  <xacro:property name="gr"          value="$(arg gripper)"/>
+  <xacro:property name="gz"          value="$(arg use_gazebo)"/>
+  <xacro:property name="mj"          value="$(arg use_mujoco)"/>
+  <xacro:property name="host"        value="$(arg host)"/>
+  <xacro:property name="rt_host"     value="$(arg rt_host)"/>
+  <xacro:property name="port"        value="$(arg port)"/>
+  <xacro:property name="mode"        value="$(arg mode)"/>
+  <xacro:property name="model"       value="$(arg model)"/>
+  <xacro:property name="update_rate" value="$(arg update_rate)"/>
+
+  <!-- Visual -->
+  <xacro:if value="${cr == 'white'}">
+    <xacro:include filename="$(find dsr_description2)/xacro/macro.e0509.white.xacro"/>
+  </xacro:if>
+  <xacro:if value="${cr == 'blue'}">
+    <xacro:include filename="$(find dsr_description2)/xacro/macro.e0509.blue.xacro"/>
+  </xacro:if>
+
+  <xacro:e0509 namespace="$(arg namespace)"/>
+
+  <!-- World -->
+  <link name="world"/>
+  <joint name="world_fixed" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
+  <!-- Gazebo -->
+  <xacro:if value="${gz}">
+    <xacro:include filename="$(find dsr_description2)/ros2_control/e0509.gz_ros2_control.xacro"/>
+    <xacro:e0509_gz_ros2_control namespace="$(arg namespace)"/>
+  </xacro:if>
+
+  <!-- Mujoco -->
+  <xacro:if value="${mj and not gz}">
+    <xacro:include filename="$(find dsr_description2)/ros2_control/e0509.mj_ros2_control.xacro"/>
+    <xacro:e0509_mj_ros2_control
+      namespace="$(arg namespace)"
+      gripper="$(arg gripper)"
+      update_rate="${update_rate}"
+    />
+  </xacro:if>
+
+  <!-- Default ros2_control -->
+  <xacro:unless value="${gz or mj}">
+    <xacro:include filename="$(find dsr_description2)/ros2_control/e0509.ros2_control.xacro"/>
+    <xacro:e0509_ros2_control
+      name="${model}"
+      host="${host}"
+      rt_host="${rt_host}"
+      port="${port}"
+      mode="${mode}"
+      model="${model}"
+      update_rate="${update_rate}"
+    />
+  </xacro:unless>
+    <!-- RH-P12-RN-A 그리퍼 인스턴스 -->
+  <!-- prefix를 gripper_로 주면 링크 이름이 gripper_rh_p12_rn_* 으로 생성됨 -->
+  <xacro:rh_p12_rn_a prefix="gripper_"/>
+
+  <!-- 두산 link6에 그리퍼 base를 고정 조인트로 부착 -->
+  <joint name="attach_rhp12_to_link6" type="fixed">
+    <parent link="link_6"/>                     <!-- 두산 마지막 링크 -->
+    <child  link="gripper_rh_p12_rn_base"/>    <!-- 그리퍼 base 링크 -->
+    <!-- 위치는 일단 대충 0.1m 위로 올려둠, 나중에 조정 가능 -->
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+</robot>
