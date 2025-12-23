@@ -1,3 +1,7 @@
 [submodule "src/RH-P12-RN-A"]
 	path = src/RH-P12-RN-A
 	url = https://github.com/ROBOTIS-GIT/RH-P12-RN-A.git
+[submodule "src/doosan-robot2"]
+	path = src/doosan-robot2
+	url = https://github.com/fhekwn549/doosan-robot2.git
+	branch = humble
