@@ -6,6 +6,11 @@ colcon build --symlink-install
 
 source install/setup.bash
 
+
+-----------------
+
+git submodule update --init --recursive
+
 -----------------
 
 ros2 run controller_manager spawner dsr_joint_trajectory -c /dsr01/controller_manager
