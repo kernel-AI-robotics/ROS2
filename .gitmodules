@@ -5,3 +5,6 @@
 	path = src/doosan-robot2
 	url = https://github.com/fhekwn549/doosan-robot2.git
 	branch = humble
+[submodule "src/e0509_gripper_description"]
+	path = src/e0509_gripper_description
+	url = https://github.com/fhekwn549/e0509_gripper_description.git
