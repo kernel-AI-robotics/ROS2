@@ -24,7 +24,7 @@ def main():
 
     # 요청 생성
     request = MoveJoint.Request()
-    request.pos = [0.0, 0.0, 90.0, 0.0, 90.0, 0.0]
+    request.pos = [0.0, 14.0, 90.0, 0.0, 90.0, 0.0]
     request.vel = 60.0
     request.acc = 60.0
 

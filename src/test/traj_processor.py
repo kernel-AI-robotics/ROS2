@@ -7,9 +7,9 @@ import math
 def deg2rad(d): 
     return d * math.pi / 180.0
 
-class PathProcessor(Node):
+class TrajProcessor(Node):
     def __init__(self):
-        super().__init__('joint_trajectory_path_processor')
+        super().__init__('joint_trajectory_processor')
 
         self.sub_topic = '/test/joint_trajectory'
         self.pub_topic = '/dsr01/dsr_joint_trajectory/joint_trajectory'
@@ -23,6 +23,7 @@ class PathProcessor(Node):
         self.get_logger().info(f"Pub: {self.pub_topic}")
 
     def on_traj(self, msg: JointTrajectory):
+        print("hi")
         # joint_2가 없으면 패스
         if 'joint_2' not in msg.joint_names:
             self.get_logger().warn("joint_2 not found in incoming JointTrajectory.joint_names")
@@ -41,7 +42,7 @@ class PathProcessor(Node):
                 self.get_logger().warn("positions length shorter than joint_names; skipping point")
                 continue
 
-            q[j2_idx] += self.offset
+            #q[j2_idx] += self.offset
 
             np = JointTrajectoryPoint()
             np.positions = q
@@ -61,7 +62,7 @@ class PathProcessor(Node):
 
 def main():
     rclpy.init()
-    node = PathProcessor()
+    node = TrajProcessor()
     try:
         rclpy.spin(node)
     finally:
