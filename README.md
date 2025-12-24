@@ -60,6 +60,7 @@ ros2 topic pub /dsr01/gripper/position_cmd std_msgs/msg/Int32 "{data: 350}" --on
 ```bash
 # 한 번 움직이기([0, 14, 90, 0, 90, 0])
 python3 <ROS2>/src/test/single_move.py
+
 # 왕복 5번 움직이기([0, 0, 90, 0, 90, 0] ~ [0, 14, 90, 0, 90, 0])
 python3 <ROS2>/src/test/multiple_move.py
 ```
